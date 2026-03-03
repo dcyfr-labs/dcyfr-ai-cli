@@ -32,6 +32,6 @@ When using DCYFR AI CLI:
 
 DCYFR AI CLI depends on:
 - `commander` - Command-line interface creation
-- `@dcyfr/ai` - DCYFR AI framework
+- `@dcyfr/ai` - DCYFR AI harness
 
 These dependencies are regularly updated for security patches.
