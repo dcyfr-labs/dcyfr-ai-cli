@@ -60,7 +60,7 @@
     "commander": "^14.0.2"
   },
   "peerDependencies": {
-    "@dcyfr/ai": "^2.1.0"
+    "@dcyfr/ai": "^3.0.1"
   },
   "peerDependenciesMeta": {
     "@dcyfr/ai": {
