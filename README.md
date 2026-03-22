@@ -30,12 +30,12 @@ dcyfr init my-project
 
 ## 🧭 Related Packages
 
-| Package | Purpose | Type |
-|---------|---------|------|
-| [@dcyfr/ai](../dcyfr-ai) | Core AI harness | npm package |
-| [@dcyfr/ai-nodejs](../dcyfr-ai-nodejs) | Node.js starter | Template |
-| [@dcyfr/ai-api](../dcyfr-ai-api) | REST API template | Template |
-| [dcyfr-labs](../dcyfr-labs) | Production Next.js app | Application |
+| Package                                | Purpose                | Type        |
+| -------------------------------------- | ---------------------- | ----------- |
+| [@dcyfr/ai](../dcyfr-ai)               | Core AI harness        | npm package |
+| [@dcyfr/ai-nodejs](../dcyfr-ai-nodejs) | Node.js starter        | Template    |
+| [@dcyfr/ai-api](../dcyfr-ai-api)       | REST API template      | Template    |
+| [dcyfr-labs](../dcyfr-labs)            | Production Next.js app | Application |
 
 ---
 
@@ -133,6 +133,8 @@ dcyfr --version   # Show version
 ```
 
 ### Examples
+
+Standardized example index: [examples/README.md](./examples/README.md)
 
 #### Check Framework Status
 
@@ -234,12 +236,14 @@ const { runCLI } = require('@dcyfr/ai-cli');
 Execute CLI commands programmatically.
 
 **Parameters:**
+
 - `args: string[]` - Command line arguments (defaults to `process.argv.slice(2)`)
 - `options?: CLIOptions` - Optional configuration
 
 **Returns:** `Promise<CLIResult>`
 
 **CLIOptions:**
+
 ```typescript
 interface CLIOptions {
   throw?: boolean; // If true, throw errors instead of returning them (default: false)
@@ -247,11 +251,12 @@ interface CLIOptions {
 ```
 
 **CLIResult:**
+
 ```typescript
 interface CLIResult {
-  exitCode: number;  // 0 for success, non-zero for error
-  stdout: string;    // Standard output captured during execution
-  stderr: string;    // Standard error captured during execution
+  exitCode: number; // 0 for success, non-zero for error
+  stdout: string; // Standard output captured during execution
+  stderr: string; // Standard error captured during execution
 }
 ```
 
