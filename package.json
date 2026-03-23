@@ -60,7 +60,7 @@
     "typescript",
     "nodejs"
   ],
-  "author": "DCYFR",
+  "author": "DCYFR Labs",
   "license": "MIT",
   "dependencies": {
     "chokidar": "^5.0.0",

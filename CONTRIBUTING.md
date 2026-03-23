@@ -6,6 +6,20 @@ First off, thanks for considering contributing to DCYFR AI CLI! It's people like
 
 This project and everyone participating in it is governed by our [Code of Conduct](../CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
 
+## Licensing & Contributions
+
+By contributing to `@dcyfr/ai-cli`, you agree that:
+
+- Your contributions will be licensed under the project's MIT License
+- You have the right to submit the contribution under this license
+- You grant DCYFR Labs perpetual rights to use, modify, and distribute your contribution
+
+### Trademark
+
+Do not use "DCYFR" trademarks in ways that imply endorsement without permission. See [../TRADEMARK.md](../TRADEMARK.md) for usage guidelines.
+
+**Questions?** Contact [licensing@dcyfr.ai](mailto:licensing@dcyfr.ai)
+
 ## How Can I Contribute?
 
 ### Reporting Bugs
@@ -50,55 +64,65 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/dcyfr/
 ### Local Development
 
 1. **Fork the repository**:
+
    ```bash
    # Click "Fork" on GitHub
    ```
 
 2. **Clone your fork**:
+
    ```bash
    git clone https://github.com/YOUR-USERNAME/dcyfr-ai-cli.git
    cd dcyfr-ai-cli
    ```
 
 3. **Add upstream remote**:
+
    ```bash
    git remote add upstream https://github.com/dcyfr/dcyfr-ai-cli.git
    ```
 
 4. **Install dependencies**:
+
    ```bash
    npm install
    ```
 
 5. **Create a feature branch**:
+
    ```bash
    git checkout -b feature/my-feature
    ```
 
 6. **Make your changes** and test locally:
+
    ```bash
    npm run build
    npm start --help
    ```
 
 7. **Run tests**:
+
    ```bash
    npm test
    npm run test:coverage
    ```
 
 8. **Lint and format**:
+
    ```bash
    npm run lint:fix
    npm run format
    ```
 
 9. **Commit your changes**:
+
    ```bash
    git commit -am 'Add my feature'
    ```
 
 10. **Push to your fork**:
+
     ```bash
     git push origin feature/my-feature
     ```
@@ -114,9 +138,10 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/dcyfr/
 - Limit the first line to 72 characters or less
 - Reference issues and pull requests liberally after the first line
 - Example:
+
   ```
   Add cross-platform config directory detection
-  
+
   - Uses os.homedir() for proper home directory resolution
   - Respects APPDATA on Windows
   - Fixes #123

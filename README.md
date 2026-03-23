@@ -12,6 +12,15 @@
 
 This is a standalone CLI tool extracted from the dcyfr-ai-nodejs starter template, designed to be lightweight, portable, and easy to use across all operating systems.
 
+## About DCYFR
+
+`@dcyfr/ai-cli` is maintained by **DCYFR Labs** as part of the DCYFR AI tooling portfolio.
+
+- **DCYFR** is a registered trademark of DCYFR Labs.
+- Primary domain: [www.dcyfr.ai](https://www.dcyfr.ai)
+- Trademark guidance: [../TRADEMARK.md](../TRADEMARK.md)
+- Licensing details: [LICENSE](./LICENSE)
+
 ---
 
 ## ⚡ 30-Second Quick Start
