@@ -76,7 +76,7 @@ function isLikelyLocalEndpoint(url?: string | undefined): boolean {
 
 /**
  * PREFERRED PROVIDER EXECUTION ORDER
- * 
+ *
  * Defines the fallback chain for AI provider selection:
  * 1. Msty Vibe CLI Proxy (maps openai standard to Claude, GPT/Codex, Gemini on port 8317)
  * 2. Anthropic (Claude only)
@@ -98,12 +98,12 @@ export const PREFERRED_PROVIDER_ORDER: AIProviderType[] = [
 const PROVIDER_DEFAULTS: Record<AIProviderType, { baseUrl: string; model: string; envKey: string }> = {
   anthropic: {
     baseUrl: 'https://api.anthropic.com/v1',
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-3-5-haiku-latest',
     envKey: 'ANTHROPIC_API_KEY',
   },
   openai: {
     baseUrl: 'https://api.openai.com/v1',
-    model: 'gpt-4o',
+    model: 'gpt-5-nano',
     envKey: 'OPENAI_API_KEY',
   },
   groq: {
@@ -146,16 +146,19 @@ export async function resolveProvider(
   const provider = overrides?.provider ?? fileConfig.provider ?? detectProvider();
   const defaults = PROVIDER_DEFAULTS[provider];
   const openAiBaseFromEnv = process.env.OPENAI_BASE_URL ?? process.env.OPENAI_API_BASE;
+  const aiGatewayApiKey = process.env.AI_GATEWAY_API_KEY;
+  const inferredOpenAiBase = openAiBaseFromEnv ?? (aiGatewayApiKey ? 'https://ai-gateway.vercel.sh/v1' : undefined);
 
   const resolvedBaseUrl =
     overrides?.baseUrl
     ?? fileConfig.baseUrl
-    ?? (provider === 'openai' && openAiBaseFromEnv ? openAiBaseFromEnv : defaults.baseUrl);
+    ?? (provider === 'openai' && inferredOpenAiBase ? inferredOpenAiBase : defaults.baseUrl);
 
   const resolvedApiKey =
     overrides?.apiKey
     ?? fileConfig.apiKey
     ?? process.env[defaults.envKey]
+    ?? (provider === 'openai' ? aiGatewayApiKey : undefined)
     ?? (provider === 'openai' && isLikelyLocalEndpoint(resolvedBaseUrl) ? 'local-inference-proxy' : undefined);
 
   return {
@@ -173,6 +176,7 @@ export async function resolveProvider(
  */
 function detectProvider(): AIProviderType {
   if (process.env.OPENAI_BASE_URL || process.env.OPENAI_API_BASE) return 'openai';
+  if (process.env.AI_GATEWAY_API_KEY) return 'openai';
   if (process.env.ANTHROPIC_API_KEY) return 'anthropic';
   if (process.env.OPENAI_API_KEY) return 'openai';
   if (process.env.GROQ_API_KEY) return 'groq';
