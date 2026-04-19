@@ -1,0 +1,8 @@
+{
+  "repo_notes": [
+    {
+      "content": "CLI and runtime orchestration for the DCYFR AI framework. This package provides command-line tools for managing agents, running tasks, and orchestrating AI workflows. Document the CLI command structure, agent invocation patterns, and integration with the core @dcyfr/ai framework.",
+      "author": "DCYFR Engineering"
+    }
+  ]
+}
