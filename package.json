@@ -90,7 +90,8 @@
     "vitest": "^4.1.4"
   },
   "overrides": {
-    "axios": "^1.8.2"
+    "axios": "^1.8.2",
+    "postcss": "^8.5.10"
   },
   "engines": {
     "node": ">=20.0.0",
