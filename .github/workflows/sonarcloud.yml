@@ -50,6 +50,9 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
+      - name: Build dist/ (required by integration tests that exec bin/cli.js)
+        run: npm run build
+
       - name: Run tests with coverage
         run: npm run test:coverage
         continue-on-error: true
