@@ -58,6 +58,21 @@ export interface AIProviderStatus {
   reason?: string | undefined;
 }
 
+/**
+ * Validate a config-supplied AI provider base URL and resolve it against a
+ * hardcoded path. Restricts the protocol to http(s) — file://, data://, and
+ * javascript: schemes from a malicious config file cannot reach `fetch()`.
+ * CodeQL recognises the protocol check as a sanitiser for js/file-access-to-http.
+ */
+function resolveEndpoint(baseUrl: string | undefined, path: string, fallback: string): string {
+  const base = baseUrl ?? fallback;
+  const parsed = new globalThis.URL(base);
+  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+    throw new Error(`Invalid AI provider URL scheme: ${parsed.protocol}`);
+  }
+  return new globalThis.URL(path, parsed).toString();
+}
+
 function isLikelyLocalEndpoint(url?: string | undefined): boolean {
   if (!url) return false;
   try {
@@ -230,7 +245,12 @@ export async function checkProviderStatus(config: AIProviderConfig): Promise<AIP
   if (config.provider === 'ollama') {
     // Check if Ollama is running
     try {
-      const resp = await fetch(`${config.baseUrl?.replace('/api', '') ?? 'http://localhost:11434'}/api/tags`, {
+      const tagsUrl = resolveEndpoint(
+        config.baseUrl?.replace('/api', ''),
+        '/api/tags',
+        'http://localhost:11434',
+      );
+      const resp = await fetch(tagsUrl, {
         signal: AbortSignal.timeout(2000),
       });
       if (resp.ok) {
@@ -251,7 +271,8 @@ export async function checkProviderStatus(config: AIProviderConfig): Promise<AIP
     const endpoint = config.baseUrl ?? 'http://127.0.0.1:11973/v1';
     const origin = endpoint.replace(/\/v1\/?$/, '');
     try {
-      const resp = await fetch(`${origin}/health`, { signal: AbortSignal.timeout(2000) });
+      const healthUrl = resolveEndpoint(origin, '/health', 'http://127.0.0.1:11973');
+      const resp = await fetch(healthUrl, { signal: AbortSignal.timeout(2000) });
       if (resp.ok) {
         return { ...base, available: true };
       }
@@ -320,7 +341,8 @@ async function anthropicCompletion(
     body.system = systemMessage.content;
   }
 
-  const resp = await fetch(`${config.baseUrl}/messages`, {
+  const messagesUrl = resolveEndpoint(config.baseUrl, '/messages', 'https://api.anthropic.com/v1');
+  const resp = await fetch(messagesUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -368,7 +390,8 @@ async function openaiCompletion(
     headers.Authorization = `Bearer ${config.apiKey}`;
   }
 
-  const resp = await fetch(`${config.baseUrl}/chat/completions`, {
+  const completionsUrl = resolveEndpoint(config.baseUrl, '/chat/completions', 'http://127.0.0.1:11973/v1');
+  const resp = await fetch(completionsUrl, {
     method: 'POST',
     headers,
     body: JSON.stringify({
@@ -410,7 +433,8 @@ async function ollamaCompletion(
   messages: AIMessage[],
   start: number,
 ): Promise<AIResponse> {
-  const resp = await fetch(`${config.baseUrl}/chat`, {
+  const chatUrl = resolveEndpoint(config.baseUrl, '/chat', 'http://localhost:11434/api');
+  const resp = await fetch(chatUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
