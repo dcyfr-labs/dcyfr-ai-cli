@@ -136,14 +136,23 @@ export function createConfigCommand(): Command {
 }
 
 /**
- * Set a value at a nested path
+ * Set a value at a nested path. Rejects keys that would mutate Object.prototype
+ * (`__proto__`, `constructor`, `prototype`) — these can otherwise be smuggled
+ * via a user-supplied dotted path like `dcyfr config set __proto__.polluted true`.
  */
+const FORBIDDEN_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+
 function setNestedValue(obj: Record<string, unknown>, parts: string[], value: unknown): void {
+  for (const key of parts) {
+    if (FORBIDDEN_KEYS.has(key)) {
+      throw new Error(`Refusing to set forbidden config key: ${key}`);
+    }
+  }
   let current = obj;
   for (let i = 0; i < parts.length - 1; i++) {
     const key = parts[i]!;
     if (typeof current[key] !== 'object' || current[key] === null) {
-      current[key] = {};
+      current[key] = Object.create(null) as Record<string, unknown>;
     }
     current = current[key] as Record<string, unknown>;
   }
