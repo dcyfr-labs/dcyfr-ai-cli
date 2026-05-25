@@ -5,7 +5,7 @@
  */
 
 import { readdir, readFile, access } from 'fs/promises';
-import { join, relative, extname } from 'path';
+import { join, relative, extname, sep } from 'path';
 
 /**
  * Default ignore patterns for file discovery
@@ -59,7 +59,7 @@ function matchesFileCriteria(
   pathPattern: RegExp | undefined,
 ): boolean {
   if (extensions && !extensions.includes(extname(fileName))) return false;
-  if (pathPattern && !pathPattern.test(fullPath)) return false;
+  if (pathPattern && !pathPattern.test(toPosix(fullPath))) return false;
   return true;
 }
 
@@ -138,10 +138,22 @@ export async function pathExists(filePath: string): Promise<boolean> {
 }
 
 /**
- * Get relative path from workspace root
+ * Get relative path from workspace root.
+ *
+ * Always returns POSIX-style forward slashes regardless of platform so that
+ * pattern matchers, report strings, and AI context remain stable across
+ * Windows, macOS, and Linux.
  */
 export function relativePath(workspaceRoot: string, filePath: string): string {
-  return relative(workspaceRoot, filePath);
+  return toPosix(relative(workspaceRoot, filePath));
+}
+
+/**
+ * Convert platform-native separators to POSIX forward slashes. No-op on POSIX
+ * platforms where `sep === '/'`.
+ */
+function toPosix(p: string): string {
+  return sep === '/' ? p : p.split(sep).join('/');
 }
 
 /**
