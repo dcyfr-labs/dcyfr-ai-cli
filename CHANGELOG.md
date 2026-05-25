@@ -1,5 +1,11 @@
 # @dcyfr/ai-cli
 
+## 1.0.5
+
+### Patch Changes
+
+- [#86](https://github.com/dcyfr-labs/dcyfr-ai-cli/pull/86) [`98d031a`](https://github.com/dcyfr-labs/dcyfr-ai-cli/commit/98d031af6fb55a75593eb678cc1da4f6f9be2771) Thanks [@dcyfr](https://github.com/dcyfr)! - fix(lib/files): normalize path separators to POSIX in `relativePath` and `pathPattern` matching so scanner output, AI context, and forward-slash regexes (`/\/src\//`, `/\/api\//`, `/\/docs\//`) behave identically on Windows, macOS, and Linux. Fixes two pre-existing Windows-only test failures in `tests/lib/files.test.ts` that were masked by `continue-on-error` on non-Linux runners.
+
 ## 1.0.3
 
 ### Patch Changes
