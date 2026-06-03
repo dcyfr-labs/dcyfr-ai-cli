@@ -34,7 +34,7 @@ jobs:
         # fails non-fatally and the fallback chain below picks up RELEASE_TOKEN.
         if: ${{ vars.RELEASE_APP_ID != '' }}
         continue-on-error: true
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ vars.RELEASE_APP_ID }}
           private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
