@@ -64,7 +64,7 @@
   "license": "MIT",
   "dependencies": {
     "chokidar": "^5.0.0",
-    "commander": "^14.0.2"
+    "commander": "^15.0.0"
   },
   "peerDependencies": {
     "@dcyfr/ai": "^3.0.1"
