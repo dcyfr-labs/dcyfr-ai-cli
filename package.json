@@ -91,7 +91,8 @@
   },
   "overrides": {
     "axios": "^1.8.2",
-    "postcss": "^8.5.10"
+    "postcss": "^8.5.10",
+    "js-yaml": "^4.2.0"
   },
   "engines": {
     "node": ">=20.0.0",
