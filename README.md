@@ -5,14 +5,14 @@
   status: active
   name: dcyfr-ai-cli
   description: DCYFR AI Command-Line Interface - Portable CLI tool for DCYFR AI harness
-  last_validated: 2026-03-29
+  last_validated: 2026-07-11
 -->
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/dcyfr-labs/dcyfr-ai-cli)
 
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D20.0.0-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Sponsor](https://img.shields.io/badge/sponsor-30363D?style=flat-square&logo=GitHub-Sponsors&logoColor=#EA4AAA)](https://github.com/sponsors/dcyfr)
+[![Sponsor](https://img.shields.io/badge/sponsor-30363D?style=flat-square&logo=GitHub-Sponsors&logoColor=EA4AAA)](https://github.com/sponsors/dcyfr)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](./LICENSE)
 [![npm](https://img.shields.io/npm/v/@dcyfr/ai-cli?style=flat-square&logo=npm)](https://www.npmjs.com/package/@dcyfr/ai-cli)
 
@@ -26,7 +26,6 @@ This is a standalone CLI tool extracted from the dcyfr-ai-nodejs starter templat
 
 - **DCYFR** is a trademark of DCYFR Labs.
 - Primary domain: [www.dcyfr.ai](https://www.dcyfr.ai)
-- Trademark guidance: [../TRADEMARK.md](../TRADEMARK.md)
 - Licensing details: [LICENSE](./LICENSE)
 
 ---
@@ -47,12 +46,14 @@ dcyfr init my-project
 
 ## 🧭 Related Packages
 
-| Package                                | Purpose                | Type        |
-| -------------------------------------- | ---------------------- | ----------- |
-| [@dcyfr/ai](../dcyfr-ai)               | Core AI harness        | npm package |
-| [@dcyfr/ai-nodejs](../dcyfr-ai-nodejs) | Node.js starter        | Template    |
-| [@dcyfr/ai-api](../dcyfr-ai-api)       | REST API template      | Template    |
-| [dcyfr-labs](../dcyfr-labs)            | Production Next.js app | Application |
+| Package                                                           | Purpose                | Type        |
+| ------------------------------------------------------------------ | ---------------------- | ----------- |
+| [@dcyfr/ai](https://github.com/dcyfr-labs/dcyfr-ai)                 | Core AI harness        | npm package |
+| [@dcyfr/ai-nodejs](https://github.com/dcyfr-labs/dcyfr-ai-nodejs)   | Node.js starter        | Template    |
+| [@dcyfr/ai-api](https://github.com/dcyfr-labs/dcyfr-ai-api)         | REST API template      | Template    |
+| [dcyfr-labs](https://github.com/dcyfr-labs/dcyfr-labs)              | Production Next.js app | Application |
+
+> This package declares an **optional peer dependency** on [`@dcyfr/ai`](https://github.com/dcyfr-labs/dcyfr-ai) (`^3.0.1`).
 
 ---
 
@@ -93,7 +94,7 @@ npx dcyfr --help
 #### Manual from Source
 
 ```bash
-git clone https://github.com/dcyfr/dcyfr-ai-cli.git
+git clone https://github.com/dcyfr-labs/dcyfr-ai-cli.git
 cd dcyfr-ai-cli
 npm install
 npm run build
@@ -141,13 +142,21 @@ npx dcyfr status
 ### Available Commands
 
 ```bash
-dcyfr status      # Show framework status
-dcyfr validate    # Run validation checks
+dcyfr status      # Show DCYFR AI harness / workspace status
+dcyfr validate    # Run validation checks (compliance, security, governance)
 dcyfr telemetry   # Show telemetry configuration
-dcyfr init        # Show initialization help
+dcyfr init        # Initialize DCYFR AI CLI configuration
+dcyfr scan        # Run workspace scanners
+dcyfr health      # Show workspace health dashboard
+dcyfr fix         # Auto-fix violations detected by scanners
+dcyfr daemon      # Manage the workspace guardian daemon
+dcyfr ai          # Manage AI provider configuration
+dcyfr config      # Manage DCYFR configuration
 dcyfr --help      # Show all commands
 dcyfr --version   # Show version
 ```
+
+Full per-command flags, subcommands, and examples: **[docs/COMMAND_REFERENCE.md](./docs/COMMAND_REFERENCE.md)**.
 
 ### Examples
 
@@ -228,7 +237,7 @@ try {
 import { runCLI } from '@dcyfr/ai-cli';
 
 const result = await runCLI(['--version']);
-console.log(result.stdout); // "1.0.0"
+console.log(result.stdout); // e.g. "1.0.5"
 ```
 
 ### JavaScript (CommonJS)
@@ -286,6 +295,23 @@ The CLI looks for configuration in the following order (first found is used):
 3. `config.json` in config directory:
    - **Windows**: `%APPDATA%\.dcyfr\`
    - **macOS/Linux**: `~/.dcyfr/`
+
+A starter config is provided at [`.dcyfr.json.example`](./.dcyfr.json.example).
+
+### Environment Variables
+
+All are optional; they configure the `dcyfr ai` provider-management command (`src/ai/provider.ts`):
+
+| Variable             | Purpose                                      |
+| -------------------- | -------------------------------------------- |
+| `ANTHROPIC_API_KEY`  | Anthropic provider credential                |
+| `GITHUB_TOKEN`       | GitHub Models provider credential            |
+| `OPENAI_BASE_URL`    | OpenAI-compatible endpoint override          |
+| `LOCAL_LLM_BASE_URL` | Local LLM endpoint (e.g., Ollama)            |
+| `LOCAL_LLM_MODEL`    | Local LLM model name                         |
+| `WORKBENCH_BASE_URL` | Remote workbench inference endpoint          |
+
+On Windows, `APPDATA` is also read to resolve the config directory.
 
 ### Example Configuration
 
@@ -353,16 +379,26 @@ npm run format
 ## 🗂️ Project Structure
 
 ```
+bin/
+└── cli.js              # npm bin wrapper → dist/cli.js
 src/
-├── cli.ts              # Main CLI entry point
-├── commands/           # Command implementations
-│   ├── status.ts       # Status command
-│   ├── validate.ts     # Validation command
-│   ├── telemetry.ts    # Telemetry command
-│   └── init.ts         # Initialization command
-└── lib/
-    ├── logger.ts       # Logging utilities
-    └── config.ts       # Configuration loading (cross-platform)
+├── cli.ts              # Main CLI entry point (commander program + runCLI)
+├── index.ts            # Library-mode exports
+├── commands/           # Command implementations (one file per command)
+│   ├── status.ts       ├── validate.ts     ├── telemetry.ts
+│   ├── init.ts         ├── scan.ts         ├── health.ts
+│   ├── daemon.ts       ├── fix.ts          ├── ai.ts
+│   └── config.ts
+├── ai/                 # AI provider management (providers, routing)
+├── config/             # Configuration schema and management
+├── daemon/             # Workspace guardian daemon internals
+├── fix/                # Auto-fix engine
+├── health/             # Health dashboard / scoring
+├── scanners/           # Workspace scanners
+└── lib/                # Shared utilities
+    ├── config.ts       # Configuration loading (cross-platform)
+    ├── files.ts        ├── git.ts          ├── logger.ts
+    ├── mode.ts         ├── types.ts        └── workspace.ts
 ```
 
 ## 🔄 Cross-Platform Compatibility
@@ -377,6 +413,7 @@ This CLI is specifically designed for cross-platform support:
 
 ## 📚 Documentation
 
+- [docs/COMMAND_REFERENCE.md](./docs/COMMAND_REFERENCE.md) - Full command reference (flags, subcommands, architecture, health scoring)
 - [AGENTS.md](./AGENTS.md) - AI agent guidance and patterns
 - [CONTRIBUTING.md](./CONTRIBUTING.md) - Contribution guidelines
 - [LICENSE](./LICENSE) - MIT License
@@ -436,9 +473,9 @@ MIT - See [LICENSE](./LICENSE) for details.
 
 ## 🔗 Related
 
-- [DCYFR AI Harness](https://github.com/dcyfr/dcyfr-ai)
-- [Node.js Starter Template](https://github.com/dcyfr/dcyfr-ai-nodejs)
-- [DCYFR Labs](https://github.com/dcyfr/dcyfr-labs)
+- [DCYFR AI Harness](https://github.com/dcyfr-labs/dcyfr-ai)
+- [Node.js Starter Template](https://github.com/dcyfr-labs/dcyfr-ai-nodejs)
+- [DCYFR Labs](https://github.com/dcyfr-labs/dcyfr-labs)
 
 ---
 
