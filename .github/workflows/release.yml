@@ -83,20 +83,22 @@ jobs:
         id: changesets
         uses: changesets/action@v2
         with:
-          publish: npm run release
-          version: npm run changeset:version
-          title: 'chore(release): version packages'
-          commit: 'chore(release): version packages'
-          createGithubReleases: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # v2 ignores the GITHUB_TOKEN env var — the token must be an input. Same
+          # App → PAT → GITHUB_TOKEN chain as checkout, so release commits, tags and
+          # the Version Packages PR are attributed to the release App.
+          github-token: ${{ steps.app-token.outputs.token || secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
+          publish-script: npm run release
+          version-script: npm run changeset:version
+          pr-title: 'chore(release): version packages'
+          commit-message: 'chore(release): version packages'
+          create-github-releases: true
 
       - name: Add Copilot as Reviewer
-        if: steps.changesets.outputs.pullRequestNumber
+        if: steps.changesets.outputs.pr-number
         uses: actions/github-script@v9
         with:
           script: |
-            const pr_number = ${{ steps.changesets.outputs.pullRequestNumber }};
+            const pr_number = ${{ steps.changesets.outputs.pr-number }};
             try {
               await github.rest.pulls.requestReviewers({
                 owner: context.repo.owner,
@@ -116,11 +118,11 @@ jobs:
           if [ "${{ steps.changesets.outputs.published }}" == "true" ]; then
             echo "✅ Successfully published packages to npm"
             echo "📦 Published packages:"
-            echo '${{ steps.changesets.outputs.publishedPackages }}' | jq '.' 2>/dev/null || echo "Unable to parse packages"
-          elif [ "${{ steps.changesets.outputs.hasChangesets }}" == "true" ]; then
+            echo '${{ steps.changesets.outputs.published-packages }}' | jq '.' 2>/dev/null || echo "Unable to parse packages"
+          elif [ "${{ steps.changesets.outputs.has-changesets }}" == "true" ]; then
             echo "📝 Release PR created/updated - merge it to publish"
-            if [ -n "${{ steps.changesets.outputs.pullRequestNumber }}" ]; then
-              echo "📋 PR #${{ steps.changesets.outputs.pullRequestNumber }}"
+            if [ -n "${{ steps.changesets.outputs.pr-number }}" ]; then
+              echo "📋 PR #${{ steps.changesets.outputs.pr-number }}"
             fi
           else
             echo "ℹ️ No changesets found and no pending release"
@@ -133,5 +135,5 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Published packages:" >> $GITHUB_STEP_SUMMARY
           echo '```json' >> $GITHUB_STEP_SUMMARY
-          echo '${{ steps.changesets.outputs.publishedPackages }}' >> $GITHUB_STEP_SUMMARY
+          echo '${{ steps.changesets.outputs.published-packages }}' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
