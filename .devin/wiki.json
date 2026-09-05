@@ -1,8 +1,47 @@
 {
   "repo_notes": [
     {
-      "content": "CLI and runtime orchestration for the DCYFR AI framework. This package provides command-line tools for managing agents, running tasks, and orchestrating AI workflows. Document the CLI command structure, agent invocation patterns, and integration with the core @dcyfr/ai framework.",
-      "author": "DCYFR Engineering"
+      "content": "Published to npm and supported on Windows, macOS and Linux; portability constraints are a real design force here.",
+      "author": "rei-doc-specialist"
+    },
+    {
+      "content": "The two biggest subsystems are src/scanners/ (14 files) and src/daemon/ (10). Neither is mentioned in the README, and both deserve a page.",
+      "author": "rei-doc-specialist"
+    }
+  ],
+  "pages": [
+    {
+      "title": "CLI Overview",
+      "purpose": "Installing and invoking the CLI, the command surface, configuration resolution, and how the process is structured."
+    },
+    {
+      "title": "Commands",
+      "purpose": "Every command under src/commands/: arguments, exit codes and output format.",
+      "parent": "CLI Overview"
+    },
+    {
+      "title": "Scanners",
+      "purpose": "The scanner subsystem under src/scanners/: what each scanner inspects, how findings are shaped, and how a new scanner is registered.",
+      "parent": "CLI Overview"
+    },
+    {
+      "title": "Daemon Mode",
+      "purpose": "Running the CLI as a long-lived daemon under src/daemon/: lifecycle, scheduling, state on disk and shutdown.",
+      "parent": "CLI Overview"
+    },
+    {
+      "title": "Health Checks",
+      "purpose": "The health subsystem under src/health/: what is probed, how results are reported, and what an unhealthy result means for exit status.",
+      "parent": "CLI Overview"
+    },
+    {
+      "title": "AI Providers and Fixes",
+      "purpose": "The AI integration under src/ai/ and the automated fix path under src/fix/, including what the CLI will and will not change on disk.",
+      "parent": "CLI Overview"
+    },
+    {
+      "title": "Cross-platform Notes",
+      "purpose": "Path, shell and terminal differences the CLI handles, and the utilities under src/lib/ that absorb them."
     }
   ]
 }
