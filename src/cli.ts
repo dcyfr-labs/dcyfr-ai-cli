@@ -53,9 +53,10 @@ program.on('command:*', () => {
     process.exit(1);
   } else {
     // Create a Commander-style error that mimics unknown option behavior
-    const commanderError = new Error(`Unknown command: ${unknownCommand}`) as any;
-    commanderError.code = 'commander.unknownCommand';
-    commanderError.exitCode = 1;
+    const commanderError = Object.assign(new Error(`Unknown command: ${unknownCommand}`), {
+      code: 'commander.unknownCommand',
+      exitCode: 1,
+    });
     throw commanderError;
   }
 });
@@ -85,19 +86,19 @@ export async function runCLI(
   const originalStderrWrite = process.stderr.write.bind(process.stderr);
 
   // Mock process.exit to prevent test termination
-  (process.exit as any) = (code?: number) => {
+  process.exit = (code?: number | string | null): never => {
     throw new Error(`process.exit unexpectedly called with "${code}"`);
   };
 
   // Capture process.stdout.write (what Commander uses)
-  (process.stdout as any).write = (chunk: any) => {
+  process.stdout.write = (chunk: string | Uint8Array) => {
     const text = chunk.toString();
     stdout.push(text);
     return originalStdoutWrite(chunk);
   };
 
   // Capture process.stderr.write
-  (process.stderr as any).write = (chunk: any) => {
+  process.stderr.write = (chunk: string | Uint8Array) => {
     const text = chunk.toString();
     stderr.push(text);
     return originalStderrWrite(chunk);
