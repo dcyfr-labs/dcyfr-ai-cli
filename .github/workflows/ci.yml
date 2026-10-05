@@ -79,6 +79,7 @@ jobs:
         with:
           name: coverage
           path: coverage/
+          retention-days: 14
 
   build:
     name: Build
