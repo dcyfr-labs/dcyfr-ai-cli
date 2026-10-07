@@ -24,7 +24,7 @@ This is a standalone CLI tool extracted from the dcyfr-ai-nodejs starter templat
 
 `@dcyfr/ai-cli` is maintained by **DCYFR Labs** as part of the DCYFR AI tooling portfolio.
 
-- **DCYFR** is a trademark of DCYFR Labs.
+- **DCYFR** is a trademark of Drew Gowan.
 - Primary domain: [www.dcyfr.ai](https://www.dcyfr.ai)
 - Licensing details: [LICENSE](./LICENSE)
 
