@@ -13,7 +13,7 @@ export function createInitCommand(): Command {
     .action(() => {
       try {
         console.log('\n🎉 DCYFR AI CLI\n');
-        console.log('Documentation: https://github.com/dcyfr/dcyfr-ai-cli');
+        console.log('Documentation: https://github.com/dcyfr-labs/dcyfr-ai-cli');
         console.log('');
         console.log('Available commands:');
         console.log('  dcyfr status    - Show framework status');

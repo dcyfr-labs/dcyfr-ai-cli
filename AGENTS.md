@@ -291,7 +291,7 @@ npm publish            # Publish to npm
 
 3. **Source Code**:
    ```bash
-   git clone https://github.com/dcyfr/dcyfr-ai-cli
+   git clone https://github.com/dcyfr-labs/dcyfr-ai-cli
    npm install
    npm link
    ```

@@ -16,7 +16,7 @@ By contributing to `@dcyfr/ai-cli`, you agree that:
 
 ### Trademark
 
-Do not use "DCYFR" trademarks in ways that imply endorsement without permission. See [../TRADEMARK.md](../TRADEMARK.md) for usage guidelines.
+DCYFR is a trademark of Drew Gowan. Do not use it in ways that imply endorsement without permission.
 
 **Questions?** Contact [licensing@dcyfr.ai](mailto:licensing@dcyfr.ai)
 
@@ -24,7 +24,7 @@ Do not use "DCYFR" trademarks in ways that imply endorsement without permission.
 
 ### Reporting Bugs
 
-Before creating bug reports, please check the [issue list](https://github.com/dcyfr/dcyfr-ai-cli/issues) as you might find out that you don't need to create one. When you are creating a bug report, please include as many details as possible:
+Before creating bug reports, please check the [issue list](https://github.com/dcyfr-labs/dcyfr-ai-cli/issues) as you might find out that you don't need to create one. When you are creating a bug report, please include as many details as possible:
 
 - **Use a clear and descriptive title**
 - **Describe the exact steps which reproduce the problem**
@@ -36,7 +36,7 @@ Before creating bug reports, please check the [issue list](https://github.com/dc
 
 ### Suggesting Enhancements
 
-Enhancement suggestions are tracked as [GitHub issues](https://github.com/dcyfr/dcyfr-ai-cli/issues). When creating an enhancement suggestion, please include:
+Enhancement suggestions are tracked as [GitHub issues](https://github.com/dcyfr-labs/dcyfr-ai-cli/issues). When creating an enhancement suggestion, please include:
 
 - **Use a clear and descriptive title**
 - **Provide a step-by-step description of the suggested enhancement**
@@ -79,7 +79,7 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/dcyfr/
 3. **Add upstream remote**:
 
    ```bash
-   git remote add upstream https://github.com/dcyfr/dcyfr-ai-cli.git
+   git remote add upstream https://github.com/dcyfr-labs/dcyfr-ai-cli.git
    ```
 
 4. **Install dependencies**:
