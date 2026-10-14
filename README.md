@@ -49,9 +49,9 @@ dcyfr init my-project
 | Package                                                           | Purpose                | Type        |
 | ------------------------------------------------------------------ | ---------------------- | ----------- |
 | [@dcyfr/ai](https://github.com/dcyfr-labs/dcyfr-ai)                 | Core AI harness        | npm package |
-| [@dcyfr/ai-nodejs](https://github.com/dcyfr-labs/dcyfr-ai-nodejs)   | Node.js starter        | Template    |
+| [@dcyfr/ai-nodejs-starter](https://github.com/dcyfr-labs/dcyfr-ai-nodejs)   | Node.js starter (unpublished) | Template    |
 | [@dcyfr/ai-api](https://github.com/dcyfr-labs/dcyfr-ai-api)         | REST API template      | Template    |
-| [dcyfr-labs](https://github.com/dcyfr-labs/dcyfr-labs)              | Production Next.js app | Application |
+| [dcyfr.ai](https://www.dcyfr.ai)              | DCYFR Labs website | Website     |
 
 > This package declares an **optional peer dependency** on [`@dcyfr/ai`](https://github.com/dcyfr-labs/dcyfr-ai) (`^3.0.1`).
 
@@ -475,7 +475,7 @@ MIT - See [LICENSE](./LICENSE) for details.
 
 - [DCYFR AI Harness](https://github.com/dcyfr-labs/dcyfr-ai)
 - [Node.js Starter Template](https://github.com/dcyfr-labs/dcyfr-ai-nodejs)
-- [DCYFR Labs](https://github.com/dcyfr-labs/dcyfr-labs)
+- [DCYFR Labs](https://www.dcyfr.ai)
 
 ---
 
