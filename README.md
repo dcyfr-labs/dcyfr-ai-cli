@@ -479,4 +479,4 @@ MIT - See [LICENSE](./LICENSE) for details.
 
 ---
 
-Built with ❤️ by [DCYFR](https://www.dcyfr.ai)
+Built with ❤️ by [DCYFR Labs](https://www.dcyfr.ai)
