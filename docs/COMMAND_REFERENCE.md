@@ -2,7 +2,7 @@
 # DCYFR CLI — Command Reference
 
 **Information Classification:** TLP:CLEAR (Public)  
-**Last Updated:** February 5, 2026
+**Last Updated:** November 17, 2026
 
 Complete command reference for `@dcyfr/ai-cli` — the DCYFR Workspace Guardian.
 
@@ -28,7 +28,7 @@ Run compliance, security, and quality scanners across the workspace.
 ```bash
 dcyfr scan                    # Run all scanners
 dcyfr scan design-tokens      # Run specific scanner
-dcyfr scan --quick            # Quick mode (fewer files)
+dcyfr scan --quick            # Quick mode (only files changed per git diff)
 dcyfr scan --project dcyfr-labs  # Scan specific project
 dcyfr scan --verbose          # Show violations detail
 dcyfr scan --json             # Machine-readable output
@@ -44,12 +44,12 @@ dcyfr scan list               # List available scanners
 | `barrel-exports` | compliance | Component directory barrel export coverage |
 | `pagelayout` | compliance | PageLayout component usage in pages |
 | `license-headers` | governance | MIT license header on source files |
-| `tlp-headers` | documentation | TLP classification on markdown files |
-| `docs-structure` | documentation | Documentation organization in `docs/` dirs |
+| `tlp-headers` | governance | TLP classification on markdown files |
+| `docs-structure` | governance | Documentation organization in `docs/` dirs |
 | `dependency-audit` | security | npm audit for known vulnerabilities |
 | `test-data-guardian` | security | Detect secrets/PII in test files |
 | `docs-generator` | documentation | Missing JSDoc/module documentation (AI) |
-| `code-smell` | cleanup | God files, long functions, deep nesting (AI) |
+| `code-smell` | compliance | God files, long functions, deep nesting (AI) |
 | `api-compliance` | compliance | Validate→Queue→Respond API patterns (AI) |
 
 ---
@@ -109,6 +109,7 @@ dcyfr fix tlp-headers         # Fix specific scanner
 dcyfr fix --dry-run           # Preview without applying
 dcyfr fix --project dcyfr-labs # Fix specific project
 dcyfr fix --verbose           # Show detailed output
+# Short flags: -n (--dry-run), -p (--project), -v (--verbose)
 dcyfr fix --json              # Machine-readable output
 dcyfr fix list                # List fixable scanners
 ```
@@ -132,6 +133,8 @@ Long-running background process that continuously monitors the workspace.
 # Lifecycle
 dcyfr daemon start              # Start in foreground
 dcyfr daemon start --background # Start detached
+dcyfr daemon start --no-watcher   # Start without the file watcher
+dcyfr daemon start --no-scheduler # Start without the scheduler
 dcyfr daemon stop               # Graceful shutdown
 dcyfr daemon status             # Show daemon status
 dcyfr daemon status --json      # JSON status
@@ -228,12 +231,20 @@ dcyfr ai config set <key> <val> # Set AI config value
 
 **Supported Providers:**
 
-| Provider | Env Variable | Model |
+Provider types defined in `src/ai/provider.ts`, with their default models:
+
+| Provider | Credential / endpoint env variable | Default model |
 |----------|-------------|-------|
-| Anthropic | `ANTHROPIC_API_KEY` | claude-sonnet-4-20250514 |
-| OpenAI | `OPENAI_API_KEY` | gpt-4o |
-| Groq | `GROQ_API_KEY` | llama-3.3-70b-versatile |
-| Ollama | (local) | llama3.2 |
+| `local` | `LOCAL_LLM_BASE_URL`, `LOCAL_LLM_MODEL`, optional `LOCAL_LLM_API_KEY` | mlx-community/Phi-3.5-mini-instruct-4bit |
+| `openai` | `OPENAI_BASE_URL`, `OPENAI_API_KEY` | auto |
+| `ollama` | none (local) | qwen2.5:7b |
+| `workbench` | `WORKBENCH_BASE_URL`, optional `WORKBENCH_API_KEY` | qwen2.5-coder:14b |
+| `github-models` | `GITHUB_TOKEN` | gpt-4o-mini |
+| `anthropic` | `ANTHROPIC_API_KEY` | claude-haiku-4-5-20251001 |
+
+When no provider is configured, the CLI picks the first match in this order: `LOCAL_LLM_BASE_URL`, `OPENAI_BASE_URL`, `WORKBENCH_BASE_URL`, `GITHUB_TOKEN`, `ANTHROPIC_API_KEY`, then falls back to `ollama`.
+
+`dcyfr ai config set` accepts the keys `provider`, `model`, `baseUrl`, `maxTokens` and `temperature`. Values are stored in `.dcyfr/ai.json`. For `provider`, the command currently accepts only `anthropic`, `openai`, `groq` and `ollama`.
 
 ---
 
@@ -242,15 +253,17 @@ dcyfr ai config set <key> <val> # Set AI config value
 Run key workspace validation checks (scanner-powered).
 
 ```bash
-dcyfr validate                # Run all validators
+dcyfr validate                # Run all scanners as validation checks
 dcyfr validate --verbose      # Detailed output
+dcyfr validate --project dcyfr-labs # Validate a specific project
+dcyfr validate --json         # Machine-readable output
 ```
 
 ---
 
 ### `dcyfr status` — Workspace Status
 
-Display workspace information and project summary.
+Show the DCYFR AI harness status: whether validation and telemetry are enabled (from the loaded config), plus Node version, platform and memory use.
 
 ```bash
 dcyfr status                  # Show workspace status
@@ -260,10 +273,20 @@ dcyfr status                  # Show workspace status
 
 ### `dcyfr init` — Initialize Workspace
 
-Initialize DCYFR configuration in the workspace.
+Print the available commands and where configuration files are read from. It does not create files; use `dcyfr config init` to write `.dcyfr/config.json`.
 
 ```bash
-dcyfr init                    # Set up .dcyfr/ directory
+dcyfr init                    # Show getting-started help
+```
+
+---
+
+### `dcyfr telemetry`: Telemetry Info
+
+Show the telemetry configuration read from `.dcyfr.json` or `config.json` (see the README for lookup order).
+
+```bash
+dcyfr telemetry               # Show telemetry status
 ```
 
 ---
@@ -324,7 +347,9 @@ src/
     ├── git.ts                # Git integration
     ├── workspace.ts          # Workspace root detection
     ├── logger.ts             # Structured logging
-    └── errors.ts             # Error types
+    ├── config.ts             # App config loading (.dcyfr.json / config.json)
+    ├── mode.ts               # Library-mode flag (avoids process.exit in tests)
+    └── types.ts              # CLI result and option types
 ```
 
 ---
@@ -342,7 +367,8 @@ All state is stored in `.dcyfr/` (gitignored):
 | `daemon.log` | Daemon log output |
 | `daemon-state.json` | Daemon runtime state |
 | `ai.json` | AI provider configuration |
-| `queue-state.json` | Persisted task queue |
+| `queue.json` | Persisted task queue |
+| `schedules.json` | Persisted scheduler state |
 
 ---
 
