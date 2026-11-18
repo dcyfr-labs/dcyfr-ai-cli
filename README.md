@@ -38,8 +38,7 @@ npm install -g @dcyfr/ai-cli
 
 # Run immediately
 dcyfr --help
-dcyfr init my-project
-# ✅ DCYFR CLI ready to use
+dcyfr init
 ```
 
 ---
@@ -182,14 +181,10 @@ Memory:       45MB / 256MB
 ```bash
 $ dcyfr validate
 
-🔍 Running Validation Checks
+🔍 Running DCYFR Validation Checks
 
-Mode: Enabled
-Parallel: Yes
-
-✅ Validation framework initialized
-✅ Configuration loaded
-✅ System checks passed
+# ...one result per scanner, then a summary.
+# Exits non-zero if any scanner fails.
 ```
 
 #### Show Telemetry Info
@@ -242,10 +237,11 @@ console.log(result.stdout); // e.g. "1.0.5"
 
 ### JavaScript (CommonJS)
 
-```javascript
-const { runCLI } = require('@dcyfr/ai-cli');
+The package is ESM-only (its `exports` map has an `import` condition only), so `require()` is not supported. From CommonJS, use a dynamic import:
 
+```javascript
 (async () => {
+  const { runCLI } = await import('@dcyfr/ai-cli');
   const result = await runCLI(['status']);
   if (result.exitCode === 0) {
     console.log('Success:', result.stdout);
@@ -305,6 +301,7 @@ All are optional; they configure the `dcyfr ai` provider-management command (`sr
 | Variable             | Purpose                                      |
 | -------------------- | -------------------------------------------- |
 | `ANTHROPIC_API_KEY`  | Anthropic provider credential                |
+| `OPENAI_API_KEY`     | OpenAI provider credential                   |
 | `GITHUB_TOKEN`       | GitHub Models provider credential            |
 | `OPENAI_BASE_URL`    | OpenAI-compatible endpoint override          |
 | `LOCAL_LLM_BASE_URL` | Local LLM endpoint (e.g., Ollama)            |
@@ -380,7 +377,7 @@ npm run format
 
 ```
 bin/
-└── cli.js              # npm bin wrapper → dist/cli.js
+└── cli.js              # npm bin wrapper → dist/index.js (runCLI)
 src/
 ├── cli.ts              # Main CLI entry point (commander program + runCLI)
 ├── index.ts            # Library-mode exports
