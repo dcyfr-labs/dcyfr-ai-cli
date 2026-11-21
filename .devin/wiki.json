@@ -2,11 +2,11 @@
   "repo_notes": [
     {
       "content": "Published to npm and supported on Windows, macOS and Linux; portability constraints are a real design force here.",
-      "author": "rei-doc-specialist"
+      "author": "dcyfr-doc-specialist"
     },
     {
       "content": "The two biggest subsystems are src/scanners/ (14 files) and src/daemon/ (10). Neither is mentioned in the README, and both deserve a page.",
-      "author": "rei-doc-specialist"
+      "author": "dcyfr-doc-specialist"
     }
   ],
   "pages": [
